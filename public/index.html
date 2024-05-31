@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Small Shop</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Our Small Shop</h1>
+        <nav>
+            <ul>
+                <li><a href="#home" onclick="showSection('home')">Home</a></li>
+                <li><a href="#products" onclick="showSection('products')">Products</a></li>
+                <li><a href="#contact" onclick="showSection('contact')">Contact</a></li>
+                <li><a href="#login" onclick="showSection('login')">Login</a></li>
+                <li><a href="#register" onclick="showSection('register')">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="section">
+        <h2>About Us</h2>
+        <p>We are a small, family-owned shop dedicated to providing quality products at affordable prices. Explore our selection of handcrafted items and unique gifts.</p>
+    </section>
+
+    <section id="products" class="section">
+        <h2>Our Products</h2>
+        <div class="product-list">
+            <div class="product">
+                <h3>Product 1</h3>
+                <p>Description of product 1.</p>
+                <button onclick="showForm('Product 1', 1000)">Buy Now</button>
+            </div>
+            <div class="product">
+                <h3>Product 2</h3>
+                <p>Description of product 2.</p>
+                <button onclick="showForm('Product 2', 2000)">Buy Now</button>
+            </div>
+            <div class="product">
+                <h3>Product 3</h3>
+                <p>Description of product 3.</p>
+                <button onclick="showForm('Product 3', 3000)">Buy Now</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="buy-form" class="section" style="display:none;">
+        <h2>Buy Product</h2>
+        <form id="orderForm">
+            <input type="hidden" id="product" name="product">
+            <input type="hidden" id="amount" name="amount">
+            
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" required>
+            
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone" required>
+            
+            <button type="submit">Place Order</button>
+        </form>
+    </section>
+
+    <section id="login" class="section" style="display:none;">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label for="loginEmail">Email:</label>
+            <input type="email" id="loginEmail" name="email" required>
+            
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" name="password" required>
+            
+            <button type="submit">Login</button>
+        </form>
+    </section>
+
+    <section id="register" class="section" style="display:none;">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <label for="registerFirstName">First Name:</label>
+            <input type="text" id="registerFirstName" name="firstName" required>
+            
+            <label for="registerLastName">Last Name:</label>
+            <input type="text" id="registerLastName" name="lastName" required>
+            
+            <label for="registerEmail">Email:</label>
+            <input type="email" id="registerEmail" name="email" required>
+            
+            <label for="registerPassword">Password:</label>
+            <input type="password" id="registerPassword" name="password" required>
+            
+            <button type="submit">Register</button>
+        </form>
+    </section>
+
+    <footer id="contact" class="section" style="display:none;">
+        <h2>Contact Us</h2>
+        <p>Email: info@smallshop.com</p>
+        <p>Phone: (123) 456-7890</p>
+        <p>Address: 123 Main Street, Hometown, USA</p>
+    </footer>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                if (section.id === sectionId) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        }
+
+        function showForm(product, amount) {
+            document.getElementById('product').value = product;
+            document.getElementById('amount').value = amount;
+            showSection('buy-form');
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            fetch('/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(Object.fromEntries(formData))
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(Object.fromEntries(formData))
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(Object.fromEntries(formData))
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Show the home section by default
+        showSection('home');
+    </script>
+</body>
+</html>
